@@ -39,9 +39,17 @@ def get_cfg(joy_x, joy_y):
 # Allows for "interpolation" regardless of input data rate
 # For example, going from note 1 to note 3 will assume note 2 was also played
 # in the "strum"
-def range_between(a, b): # From sector a to sector b
-    if a < b: return range(a, b) # Sector 0 to Sector 1 plays "String" 0
-    else: return range(b, a) # Sector 1 to Sector 0 plays "String" 0
+def range_between(a, b, to_chord): # From sector a to sector b
+    if a < b: res = range(a, b) # Sector 0 to Sector 1 plays "String" 0
+    else: res = range(b, a) # Sector 1 to Sector 0 plays "String" 0
+    if not to_chord: # Single notes
+        return [major_sixth[nt] for nt in res]
+    else: # Chords
+        ch_res = []
+        for nt in res:
+            for i in range(3):
+                ch_res.append(major_sixth[nt]+major_sixth[i])
+        return ch_res
 
 ser = serial.Serial(SERIAL_PORT, 115200)
 osc = udp_client.SimpleUDPClient("127.0.0.1", 4559) # Default OSC server location
@@ -49,15 +57,19 @@ osc = udp_client.SimpleUDPClient("127.0.0.1", 4559) # Default OSC server locatio
 cfg_instr_offset = 0
 cfg_note_offset = 0
 
-major_sixth = [0, 4, 3, 2]
+major_sixth = [0, 4, 7, 9]
 
 last_note = None
+chord_mode = False
+last_ch_button = 1
 
 while True:
     str_data = str(ser.readline(), "ascii").strip()
     num_data = [int(i) for i in str_data.split(" ")]
     print(num_data)
-    assert len(num_data) == 6, "expecting 6 serial data inputs"
+    if (len(num_data) != 6): # Gracefully ignore -- sometimes first input is incomplete
+        print("Expected 6 serial data inputs, skipping line")
+        continue
     if (num_data[3]): # Config mode
         c = get_cfg(num_data[0], num_data[1])
         print(c)
@@ -67,11 +79,26 @@ while True:
             elif c[1] == 1: # Volume change setting
                 cfg_note_offset = c[1] // 0.1
         last_note = None
-    else:
+        last_ch_button = 1
+    else: # Instrumental mode
+        if num_data[2] != last_ch_button and num_data[2]: # Debounce not necessary due to 10 Hz input rate
+            chord_mode ^= True
         n = get_note(num_data[0], num_data[1])
         print(n)
         if n is not None and last_note is not None and \
                 n[1] != last_note[1]: # Valid note change
-            for nt in range_between(last_note[1], n[1]):
-                osc.send_message("/note", [n[0]+cfg_instr_offset, 70+cfg_note_offset+major_sixth[nt]])
+
+            # Buttons change the note (note all button inputs are normally 1)
+            if not num_data[4]:
+                    if not num_data[5]:
+                        note_offset = 3
+                    else:
+                        note_offset = 1
+            elif not num_data[5]:
+                note_offset = 2
+            else:
+                note_offset = 0
+            for nt in range_between(last_note[1], n[1], chord_mode):
+                osc.send_message("/note", [n[0]+cfg_instr_offset, 70+cfg_note_offset+note_offset+nt])
         last_note = n
+        last_ch_button = num_data[2]
