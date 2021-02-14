@@ -75,6 +75,10 @@ def set_lights_instr(instrument, pos):
     lights = [tup_mult(INSTR_COLORS[instrument], i) for i in res]
     do_set_lights(lights)
 
+LIGHTS_OFF = [(0, 0, 0) for i in range(8)]
+def clear_lights():
+    do_set_lights(LIGHTS_OFF);
+
 pixels = neopixel.NeoPixel(board.D18, 8, brightness=1.0)
 INSTR_COLORS = [(255, 20, 20), (20, 20, 255), (20, 255, 20), (255, 255, 90)]
 
@@ -115,6 +119,8 @@ while True:
         print(n)
         if n is not None:
             set_lights_instr(n[0]+cfg_instr_offset, n[2])
+        else:
+            clear_lights()
         if n is not None and last_note is not None and \
                 n[1] != last_note[1]: # Valid note change
 
