@@ -110,6 +110,7 @@ while True:
                 cfg_instr_offset = 2 if c[1] > 0.5 else 0
             elif c[1] == 1: # Volume change setting
                 cfg_note_offset = c[1] // 0.1
+        clear_lights()
         last_note = None
         last_ch_button = 1
     else: # Instrumental mode
