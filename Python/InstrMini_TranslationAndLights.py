@@ -1,6 +1,7 @@
 import serial, time, math
 from pythonosc import osc_message_builder
 from pythonosc import udp_client
+import board, neopixel
 
 # CONFIGURATION BEGIN
 SERIAL_PORT = "COM4" # Serial port -- check device manager or ports listing
@@ -24,7 +25,8 @@ def get_note(joy_x, joy_y):
     note_angle = to_angle(joy_x, joy_y)
     instrument = int(note_angle > 0)
     sect = round(abs(note_angle) // (math.pi / NUM_SECTORS))
-    return (instrument, sect)
+    light_pos = abs(note_angle) / math.pi
+    return (instrument, sect, light_pos)
 
 def get_cfg(joy_x, joy_y):
     joy_x -= ADC_CENTER
@@ -46,6 +48,34 @@ def range_between(a, b, to_chord): # From sector a to sector b
         return [major_sixth[nt] for nt in res]
     else:
         return [chord_progression[nt] for nt in res]
+
+def do_set_lights(color_arr):
+    for i in range(8):
+        pixels[i] = color_arr[i]
+    print(pixels)
+
+LIGHT_LOCATIONS = [n/3 for n in range(4)] # Four lights per side
+def get_intensities(pos):
+    # Scale intensity based on distance (quadratic dropoff)
+    intens = [1-2*(l-pos)**2 for l in LIGHT_LOCATIONS]
+    intens = [i if i >= 0 else 0 for i in intens]
+    return intens
+
+def tup_mult(tup, scale):
+    return tuple(v * scale for v in tup)
+
+def set_lights_instr(instrument, pos):
+    res = [0] * 8
+    intensity = get_intensities(pos)
+    if instrument % 2 == 0: # Side A
+        res[0:4] = intensity
+    else:
+        res[7:3:-1] = intensity
+    lights = [tup_mult(INSTR_COLORS[instrument], i) for i in res]
+    do_set_lights(lights)
+
+pixels = neopixel.NeoPixel(board.D18, 8, brightness=1.0)
+INSTR_COLORS = [(255, 100, 100), (100, 100, 255), (100, 255, 100), (255, 255, 90)]
 
 ser = serial.Serial(SERIAL_PORT, 115200)
 osc = udp_client.SimpleUDPClient("127.0.0.1", 4559) # Default OSC server location
@@ -82,6 +112,8 @@ while True:
             chord_mode ^= True
         n = get_note(num_data[0], num_data[1])
         print(n)
+        if n is not None:
+            set_lights_instr(n[0]+cfg_instr_offset, n[2])
         if n is not None and last_note is not None and \
                 n[1] != last_note[1]: # Valid note change
 
