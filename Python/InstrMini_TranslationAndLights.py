@@ -4,7 +4,8 @@ from pythonosc import udp_client
 import board, neopixel
 
 # CONFIGURATION BEGIN
-SERIAL_PORT = "COM4" # Serial port -- check device manager or ports listing
+SERIAL_PORT = "/dev/ttyUSB0" # Serial port -- check device manager or ports listing
+OSC_PORT = 4560
 # Options below are purely for customization
 DEAD_ZONE = 500 # Increase this to require larger joystick movements for sound
 # CONFIGURATION END
@@ -75,10 +76,10 @@ def set_lights_instr(instrument, pos):
     do_set_lights(lights)
 
 pixels = neopixel.NeoPixel(board.D18, 8, brightness=1.0)
-INSTR_COLORS = [(255, 100, 100), (100, 100, 255), (100, 255, 100), (255, 255, 90)]
+INSTR_COLORS = [(255, 20, 20), (20, 20, 255), (20, 255, 20), (255, 255, 90)]
 
 ser = serial.Serial(SERIAL_PORT, 115200)
-osc = udp_client.SimpleUDPClient("127.0.0.1", 4559) # Default OSC server location
+osc = udp_client.SimpleUDPClient("127.0.0.1", OSC_PORT) # OSC server location
 
 cfg_instr_offset = 0
 cfg_note_offset = 0
