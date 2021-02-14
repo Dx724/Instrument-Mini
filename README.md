@@ -1,0 +1,2 @@
+# InstruMini
+String instruments, modernized.
