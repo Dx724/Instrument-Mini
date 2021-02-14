@@ -1,6 +1,6 @@
 live_loop :esp_note do
   use_real_time
-  e_instr, e_note, e_chord = sync "/osc/note"
+  e_instr, e_note, e_chord = sync "/osc*/note"
   
   instrument = :piano if e_instr == 0
   instrument = :chiplead if e_instr == 1
