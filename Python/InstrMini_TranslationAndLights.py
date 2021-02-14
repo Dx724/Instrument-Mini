@@ -80,7 +80,7 @@ def clear_lights():
     do_set_lights(LIGHTS_OFF);
 
 pixels = neopixel.NeoPixel(board.D18, 8, brightness=1.0)
-INSTR_COLORS = [(255, 20, 20), (20, 20, 255), (20, 255, 20), (255, 255, 90)]
+INSTR_COLORS = [(255, 20, 20), (20, 20, 255), (20, 255, 20), (255, 255, 90), (255, 255, 255)]
 
 ser = serial.Serial(SERIAL_PORT, 115200)
 osc = udp_client.SimpleUDPClient("127.0.0.1", OSC_PORT) # OSC server location
@@ -106,11 +106,13 @@ while True:
         c = get_cfg(num_data[0], num_data[1])
         print(c)
         if c is not None:
+            set_lights_instr(4, c[1])
             if c[0] == 0: # Instrument change setting
                 cfg_instr_offset = 2 if c[1] > 0.5 else 0
             elif c[1] == 1: # Volume change setting
                 cfg_note_offset = c[1] // 0.1
-        clear_lights()
+        else:
+            clear_lights()
         last_note = None
         last_ch_button = 1
     else: # Instrumental mode
