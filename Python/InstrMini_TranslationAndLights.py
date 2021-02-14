@@ -44,12 +44,8 @@ def range_between(a, b, to_chord): # From sector a to sector b
     else: res = range(b, a) # Sector 1 to Sector 0 plays "String" 0
     if not to_chord: # Single notes
         return [major_sixth[nt] for nt in res]
-    else: # Chords
-        ch_res = []
-        for nt in res:
-            for i in range(3):
-                ch_res.append(major_sixth[nt]+major_sixth[i])
-        return ch_res
+    else:
+        return [chord_progression[nt] for nt in res]
 
 ser = serial.Serial(SERIAL_PORT, 115200)
 osc = udp_client.SimpleUDPClient("127.0.0.1", 4559) # Default OSC server location
@@ -58,6 +54,7 @@ cfg_instr_offset = 0
 cfg_note_offset = 0
 
 major_sixth = [0, 4, 7, 9]
+chord_progression = [0, 5, 3, 4] # I - VI - IV - V
 
 last_note = None
 chord_mode = False
@@ -99,6 +96,6 @@ while True:
             else:
                 note_offset = 0
             for nt in range_between(last_note[1], n[1], chord_mode):
-                osc.send_message("/note", [n[0]+cfg_instr_offset, 70+cfg_note_offset+note_offset+nt])
+                osc.send_message("/note", [n[0]+cfg_instr_offset, 70+cfg_note_offset+note_offset+nt, 0 if not chord_mode else nt+1])
         last_note = n
         last_ch_button = num_data[2]
