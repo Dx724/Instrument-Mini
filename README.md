@@ -1,5 +1,5 @@
-# InstruMini
-## String instruments, modernized.
+# InstruMini <!-- omit in toc -->
+## String instruments, modernized. <!-- omit in toc -->
 ![Image of the InstruMini](media/img_right.jpg)
 
 [Video Intro](https://youtu.be/IEushFeu8Uk)
@@ -10,7 +10,20 @@ The InstruMini aims to demonstrate a modernized interface which allows for incre
 
 The number of notes in linearly proportional to the number of frets on a stringed instrument. On some wind instruments such as trumpets, the relation is quadratic. However, consider that each fret when represented via an electronic interface is simply a bit. Thus, the power of expression should scale exponentially with the number of controls.
 
-## TODO: Table of Contents
+# Table of Contents <!-- omit in toc -->
+- [How to Play the Instrument](#how-to-play-the-instrument)
+  - [Visual Effects](#visual-effects)
+- [Setup](#setup)
+  - [Hardware](#hardware)
+  - [ESP32 Wiring](#esp32-wiring)
+  - [Raspberry Pi Wiring](#raspberry-pi-wiring)
+  - [Connecting the Subsystems](#connecting-the-subsystems)
+  - [Software Dependencies](#software-dependencies)
+  - [Customization and Configuration](#customization-and-configuration)
+  - [Running Manually](#running-manually)
+  - [Run on Boot](#run-on-boot)
+  - [Bluetooth Audio Output](#bluetooth-audio-output)
+  - [Future Work](#future-work)
 
 # How to Play the Instrument
 The joystick takes the place of the strings on this instrument. Moving it towards the fretboard provides access to one set of notes, while moving it away provides access to another set of notes (as shown in the image below). Note that these two instruments are denoted as "Alpha" and "Beta". Initially, these map to a piano and a bitlead synth respectively.
@@ -58,7 +71,7 @@ A FreeNove 8 RGB LED module was used for visual effects. Connect the LED module 
 ## Connecting the Subsystems
 1. Connect from the micro USB port of the ESP32 to a USB port on Raspberry Pi
 2. Connect from the 3.5mm jack of the Raspberry Pi to a speaker
-   - Alternatively, a Bluetooth speaker can be used. See the section (TODO) for more details.
+   - Alternatively, a Bluetooth speaker can be used. See the section [Bluetooth Audio Output](#bluetooth-audio-output) for more details.
 
 ## Software Dependencies
 The version numbers provided below are the versions this device was tested with. Other versions (e.g., Python 3.9) are likely compatible as well.
