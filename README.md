@@ -2,7 +2,7 @@
 ## String instruments, modernized. <!-- omit in toc -->
 ![Image of the InstruMini](media/img_right.jpg)
 
-[Video Intro](https://youtu.be/IEushFeu8Uk)
+[Video Intro](https://youtu.be/IEushFeu8Uk) | [Video Demo](https://youtu.be/thNvvN-XP4w)
 
 Despite their high prices, there really hasn't been much innovation in the category of stringed instruments. The build quality might be better or faster, but it's still the same idea: strings and a fretboard.
 
