@@ -76,14 +76,15 @@ Modify settings such as the joystick dead zone (distance required away from cent
 
 ## Running Manually
 1. Upload the Arduino sketch (`/ESP32/InstrMini_Input/InstrMini_Input.ino`) to the ESP32 via the Arduino IDE
-2. Run the Python script (`/Python/InstrMini_TranslationAndLights.py`) as root (i.e., `sudo python3 InstrMini_TranslationAndLights.py`)
-3. Start up Sonic Pi and run the file in the Sonic Pi directory (`/SonicPi/InstrMini_AudioOut.rb`)
+2. Run the Python script (`/Python/InstrMini_TranslationAndLights.py`) as root (i.e., `sudo python3 InstrMini_TranslationAndLights.py`) on the Raspberry Pi
+3. Start up Sonic Pi (on the Raspberry Pi) and run the file in the Sonic Pi directory (`/SonicPi/InstrMini_AudioOut.rb`)
 
 ## Run on Boot
-To automatically start the system upon receiving power:
+To automatically start the system upon receiving power, the following steps should be taken on the Raspberry Pi:
 1. Copy the Sonic Pi script into the `init.rb` file for your Sonic Pi installation (probably `~/.sonic-pi/init.rb`)
 2. Append the lines in `/autostart` to your autostart file (probably `~/.config/lxsession/LXDE-pi/autostart`). If that file does not exist, you can just copy `/autostart` to that location.
    - Note that you may have to edit this file to have the proper paths to your `sudo`, `python3`, and `InstrMini_TranslationAndLights.py`
+3. As the graphical environment, and thus autostart, will not run if no monitor is plugged in, the setting `hdmi_force_hotplug` must be set to `1` in `/boot/config.txt` on the Raspberry Pi
   
 Upon restarting, the system should run. If the system appears unresponsive, try clicking the "RST" or "RESET" button on the ESP32.
 
