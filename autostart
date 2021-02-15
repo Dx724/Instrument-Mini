@@ -1,0 +1,2 @@
+@/usr/bin/sudo /usr/bin/python3 /home/pi/ces/Instrument-Mini/Python/InstrMini_TranslationAndLights.py
+@sonic-pi
